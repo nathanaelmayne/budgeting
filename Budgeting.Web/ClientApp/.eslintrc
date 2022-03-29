@@ -22,6 +22,15 @@
   "rules": {
     "react/jsx-filename-extension": [1, {
       "extensions": [".jsx", ".tsx"]
-    }]
+    }],
+    "import/extensions": "off"
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".ts", ".tsx"],
+        "moduleDirectory": ["src", "node_modules"]
+      }
+    }
   }
 }
