@@ -1,26 +1,21 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.scss';
+import ExpenseForm from './components/expense-form/ExpenseForm';
+import { Expense } from './models/expense.model';
 
 function App() {
+  const [expenses, setExpenses] = React.useState<Expense[]>([]);
+
+  function handleAddExpense(expense: Expense) {
+    setExpenses((prevState) => [...prevState, expense]);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit
-          <code>src/App.tsx</code>
-          and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <ExpenseForm onAddExpense={(e) => handleAddExpense(e)} />
+      {expenses.map((expense) => (
+        <p key={expense.id}>{expense.name}</p>
+      ))}
     </div>
   );
 }
