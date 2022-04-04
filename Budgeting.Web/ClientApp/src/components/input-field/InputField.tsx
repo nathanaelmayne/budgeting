@@ -1,14 +1,14 @@
 import React, { ReactNode } from 'react';
 import './InputField.scss';
 
-interface InputFieldProps {
+interface Props {
   children: ReactNode;
   label?: string;
 }
 
-function InputField({ children, label }: InputFieldProps) {
+function InputField({ children, label }: Props) {
   return (
-    <div className="form-group">
+    <div className="InputField">
       {label && (
         <label className="label" htmlFor="input-field">
           {label}

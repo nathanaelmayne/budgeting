@@ -11,11 +11,21 @@ function App() {
   }
 
   return (
-    <div className="app">
+    <div className="App">
       <ExpenseForm onAddExpense={(e) => handleAddExpense(e)} />
-      {expenses.map((expense) => (
-        <p key={expense.id}>{expense.name}</p>
-      ))}
+      <div className="historical-expenses">
+        <table>
+          <tbody>
+            {expenses.map((expense) => (
+              <tr key={expense.id}>
+                <td>{expense.name}</td>
+                <td>{expense.amount}</td>
+                <td>{expense.intervalDays}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

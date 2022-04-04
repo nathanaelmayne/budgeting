@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Expense } from '../../models/expense.model';
 import InputField from '../input-field/InputField';
+import TextButton from '../text-button/TextButton';
+import './ExpenseForm.scss';
 
-export interface ExpenseFormProps {
+interface Props {
   // eslint-disable-next-line no-unused-vars
   onAddExpense: (expense: Expense) => void;
 }
 
-function ExpenseForm({ onAddExpense }: ExpenseFormProps) {
+function ExpenseForm({ onAddExpense }: Props) {
   const [name, setName] = useState<string>('');
   const [amount, setAmount] = useState<number>(0);
   const [intervalDays, setIntervalDays] = useState<number>(0);
@@ -27,16 +29,10 @@ function ExpenseForm({ onAddExpense }: ExpenseFormProps) {
       amount,
       intervalDays,
     });
-
-    if (!expense) {
-      return;
-    }
-
-    onAddExpense(expense);
   }
 
   return (
-    <div className="expense-container-form">
+    <div className="ExpenseForm">
       <InputField label="Name">
         <input
           defaultValue={name}
@@ -61,9 +57,9 @@ function ExpenseForm({ onAddExpense }: ExpenseFormProps) {
         />
       </InputField>
 
-      <button onClick={handleAddExpense} type="button">
-        Add Expense
-      </button>
+      <div className="button-wrapper">
+        <TextButton onClick={() => handleAddExpense()}>Add Expense</TextButton>
+      </div>
     </div>
   );
 }

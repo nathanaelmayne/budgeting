@@ -1,0 +1,18 @@
+.TextButton {
+  border-radius: 5px;
+  border: 1px solid rgb(232, 234, 237);
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1em;
+  padding: calc(0.75 * 1rem) calc(2 * 1rem);
+  cursor: pointer;
+  background-color: transparent;
+  color: rgb(232, 234, 237);
+
+  &:hover {
+    border: 1px solid white;
+    color: white;
+  }
+}
