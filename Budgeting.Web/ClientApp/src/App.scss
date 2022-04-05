@@ -1,7 +1,13 @@
 .App {
-  padding: 24px;
-}
+  display: flex;
+  justify-content: center;
 
-.ExpenseForm {
-  width: 300px;
+  .main-container {
+    padding: 24px 0;
+    max-width: 1000px;
+    .actions {
+      display: flex;
+      gap: 24px;
+    }
+  }
 }
