@@ -1,11 +1,15 @@
-.InputField {
-  padding-bottom: 24px;
-}
+.ExpenseForm {
+  max-width: 400px;
 
-button {
-  width: 100%;
-}
+  .InputField {
+    padding-bottom: 24px;
+  }
 
-.button-wrapper {
-  padding-top: 19px;
+  button {
+    width: 100%;
+  }
+
+  .button-wrapper {
+    padding-top: 19px;
+  }
 }

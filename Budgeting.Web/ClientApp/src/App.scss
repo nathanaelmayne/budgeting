@@ -5,9 +5,25 @@
   .main-container {
     padding: 24px 0;
     max-width: 1000px;
+
     .actions {
       display: flex;
       gap: 24px;
+    }
+
+    .historical-expenses {
+      padding: 24px 0;
+
+      tr {
+        cursor: pointer;
+        td:not(:first-child) {
+          padding: 8px 24px;
+        }
+
+        &:hover td {
+          background-color: #27282b;
+        }
+      }
     }
   }
 }
