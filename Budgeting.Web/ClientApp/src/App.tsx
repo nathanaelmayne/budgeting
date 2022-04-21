@@ -74,13 +74,13 @@ function App() {
       </div>
 
       {showAddExpenseModal && (
-        <Modal>
+        <Modal onClose={() => setShowAddExpenseModal(false)}>
           <ExpenseForm handleExpenseSaved={(e) => handleAddExpense(e)} />
         </Modal>
       )}
 
       {showEditExpenseModal && (
-        <Modal>
+        <Modal onClose={() => setShowEditExpenseModal(false)}>
           <ExpenseForm
             editingExpense={editingExpense}
             handleExpenseSaved={(e) => handleEditExpense(e)}
