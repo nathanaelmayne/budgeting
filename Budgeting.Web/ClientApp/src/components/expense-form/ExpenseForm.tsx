@@ -13,7 +13,7 @@ interface Props {
 function ExpenseForm({ handleExpenseSaved, editingExpense }: Props) {
   const [name, setName] = useState<string>('');
   const [amount, setAmount] = useState<string>('');
-  const [intervalDays, setIntervalDays] = useState<string>('');
+  const [timestamp, setTimestamp] = useState<string>('');
   const [expense, setExpense] = useState<Expense>();
   const [editing, setEditing] = useState<boolean>(false);
 
@@ -22,7 +22,7 @@ function ExpenseForm({ handleExpenseSaved, editingExpense }: Props) {
       setEditing(true);
       setName(editingExpense.name);
       setAmount(editingExpense.amount.toString());
-      setIntervalDays(editingExpense.intervalDays.toString());
+      setTimestamp(editingExpense.timestamp.toString());
       setExpense(editingExpense);
     }
   }, []);
@@ -39,7 +39,7 @@ function ExpenseForm({ handleExpenseSaved, editingExpense }: Props) {
       id: crypto.randomUUID(),
       name,
       amount: parseInt(amount, 10),
-      intervalDays: parseInt(intervalDays, 10),
+      timestamp,
     });
   }
 
@@ -50,7 +50,7 @@ function ExpenseForm({ handleExpenseSaved, editingExpense }: Props) {
       id: expense.id,
       name,
       amount: parseInt(amount, 10),
-      intervalDays: parseInt(intervalDays, 10),
+      timestamp,
     };
 
     setEditing(false);
@@ -62,7 +62,7 @@ function ExpenseForm({ handleExpenseSaved, editingExpense }: Props) {
       <InputField label="Name">
         <input
           defaultValue={name}
-          type="string"
+          type="text"
           onChange={(e) => setName(e.target.value)}
         />
       </InputField>
@@ -75,11 +75,11 @@ function ExpenseForm({ handleExpenseSaved, editingExpense }: Props) {
         />
       </InputField>
 
-      <InputField label="Interval (Days)">
+      <InputField label="Date">
         <input
-          defaultValue={intervalDays}
-          type="number"
-          onChange={(e) => setIntervalDays(e.target.value)}
+          defaultValue={timestamp}
+          type="text"
+          onChange={(e) => setTimestamp(e.target.value)}
         />
       </InputField>
 

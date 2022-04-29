@@ -51,9 +51,6 @@ function App() {
           <TextButton onClick={() => openAddExpenseDialog()}>
             Add Income
           </TextButton>
-          <TextButton onClick={() => openAddExpenseDialog()}>
-            Update Balance
-          </TextButton>
         </div>
         <div className="historical-expenses">
           <table>
@@ -65,7 +62,7 @@ function App() {
                 >
                   <td>{expense.name}</td>
                   <td>{expense.amount}</td>
-                  <td>{expense.intervalDays}</td>
+                  <td>{expense.timestamp}</td>
                 </tr>
               ))}
             </tbody>
