@@ -1,106 +1,69 @@
 import React, { useEffect } from 'react';
 import './App.scss';
-import ExpenseForm from './components/expense-form/ExpenseForm';
-import IncomeForm from './components/income-form/IncomeForm';
 import Modal from './components/modal/Modal';
 import TextButton from './components/text-button/TextButton';
-import { Expense } from './models/expense.model';
-import { Income } from './models/income.model';
+import TransactionForm from './components/transaction-form/TransactionForm';
+import { Transaction } from './models/transaction.model';
 
 function App() {
-  const [showAddExpenseModal, setShowAddExpenseModal] = React.useState(false);
-  const [showAddIncomeModal, setShowAddIncomeModal] = React.useState(false);
-  const [showEditExpenseModal, setShowEditExpenseModal] = React.useState(false);
-  const [showEditIncomeModal, setShowEditIncomeModal] = React.useState(false);
-  const [expenses, setExpenses] = React.useState<Expense[]>([]);
-  const [incomes, setIncomes] = React.useState<Expense[]>([]);
-  const [editingExpense, setEditingExpense] = React.useState<Expense>();
-  const [editingIncome, setEditingIncome] = React.useState<Income>();
+  const [transactions, setTransactions] = React.useState<Transaction[]>([]);
+  const [showAddTransactionModal, setShowAddTransactionModal] =
+    React.useState(false);
+  const [showEditTransactionModal, setShowEditTransactionModal] =
+    React.useState(false);
+  const [editingTransaction, setEditingTransaction] =
+    React.useState<Transaction>();
 
   useEffect(() => {
-    setExpenses(() => JSON.parse(localStorage.getItem('expenses') || '[]'));
+    setTransactions(() => JSON.parse(localStorage.getItem('expenses') || '[]'));
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('expenses', JSON.stringify(expenses));
-  }, [expenses]);
+    localStorage.setItem('transactions', JSON.stringify(transactions));
+  }, [transactions]);
 
-  function handleAddExpense(expense: Expense) {
-    setExpenses((prevState) => [...prevState, expense]);
-    setShowAddExpenseModal(false);
+  function handleAddTransaction(transaction: Transaction) {
+    setTransactions((prevState) => [...prevState, transaction]);
   }
 
-  function handleAddIncome(income: Income) {
-    setIncomes((prevState) => [...prevState, income]);
-    setShowAddIncomeModal(false);
+  function handleEditTransaction(transaction: Transaction) {
+    const copy = [...transactions];
+    const index = transactions.findIndex((e) => e.id === transaction.id);
+    copy.splice(index, 1, transaction);
+    setTransactions(copy);
+    setShowEditTransactionModal(false);
+    setEditingTransaction(undefined);
   }
 
-  function handleEditExpense(expense: Expense) {
-    const copy = [...expenses];
-    const index = expenses.findIndex((e) => e.id === expense.id);
-    copy.splice(index, 1, expense);
-    setExpenses(copy);
-    setShowEditExpenseModal(false);
+  function openAddTransactionModal() {
+    setShowAddTransactionModal(true);
   }
 
-  function handleEditIncome(income: Income) {
-    const copy = [...incomes];
-    const index = incomes.findIndex((e) => e.id === income.id);
-    copy.splice(index, 1, income);
-    setIncomes(copy);
-    setShowEditIncomeModal(false);
-  }
-
-  function openAddExpenseDialog() {
-    setShowAddExpenseModal(true);
-  }
-
-  function openAddIncomeDialog() {
-    setShowAddIncomeModal(true);
-  }
-
-  function openEditExpenseDialog(expense: Expense) {
-    setEditingExpense(expense);
-    setShowEditExpenseModal(true);
-  }
-
-  function openEditIncomeDialog(income: Income) {
-    setEditingIncome(income);
-    setShowEditIncomeModal(true);
+  function openEditTransactionModal(transaction: Transaction) {
+    setEditingTransaction(transaction);
+    setShowEditTransactionModal(true);
   }
 
   return (
     <div className="App">
       <div className="main-container">
         <div className="actions">
-          <TextButton onClick={() => openAddExpenseDialog()}>
-            Add Expense
-          </TextButton>
-          <TextButton onClick={() => openAddIncomeDialog()}>
-            Add Income
+          <TextButton onClick={() => openAddTransactionModal()}>
+            Add Transaction
           </TextButton>
         </div>
         <div className="historical-expenses">
           <table>
             <tbody>
-              {incomes.map((income) => (
+              {transactions.map((transaction) => (
                 <tr
-                  onClick={() => openEditIncomeDialog(income)}
-                  key={income.id}
+                  onClick={() => openEditTransactionModal(transaction)}
+                  key={transaction.id}
                 >
-                  <td>{income.name}</td>
-                  <td>{income.amount}</td>
-                  <td>{income.timestamp}</td>
-                </tr>
-              ))}
-              {expenses.map((expense) => (
-                <tr
-                  onClick={() => openEditExpenseDialog(expense)}
-                  key={expense.id}
-                >
-                  <td>{expense.name}</td>
-                  <td>{expense.amount}</td>
-                  <td>{expense.timestamp}</td>
+                  <td>{transaction.name}</td>
+                  <td>{transaction.amount}</td>
+                  <td>{transaction.timestamp}</td>
+                  <td>{transaction.type}</td>
                 </tr>
               ))}
             </tbody>
@@ -108,32 +71,19 @@ function App() {
         </div>
       </div>
 
-      {showAddExpenseModal && (
-        <Modal onClose={() => setShowAddExpenseModal(false)}>
-          <ExpenseForm handleExpenseSaved={(e) => handleAddExpense(e)} />
-        </Modal>
-      )}
-
-      {showEditExpenseModal && (
-        <Modal onClose={() => setShowEditExpenseModal(false)}>
-          <ExpenseForm
-            editingExpense={editingExpense}
-            handleExpenseSaved={(e) => handleEditExpense(e)}
+      {showAddTransactionModal && (
+        <Modal onClose={() => setShowAddTransactionModal(false)}>
+          <TransactionForm
+            handleTransactionSaved={(e) => handleAddTransaction(e)}
           />
         </Modal>
       )}
 
-      {showAddIncomeModal && (
-        <Modal onClose={() => setShowAddIncomeModal(false)}>
-          <IncomeForm handleIncomeSaved={(e) => handleAddIncome(e)} />
-        </Modal>
-      )}
-
-      {showEditIncomeModal && (
-        <Modal onClose={() => setShowEditIncomeModal(false)}>
-          <IncomeForm
-            editingIncome={editingIncome}
-            handleIncomeSaved={(e) => handleEditIncome(e)}
+      {showEditTransactionModal && (
+        <Modal onClose={() => setShowEditTransactionModal(false)}>
+          <TransactionForm
+            editingTransaction={editingTransaction}
+            handleTransactionSaved={(e) => handleEditTransaction(e)}
           />
         </Modal>
       )}

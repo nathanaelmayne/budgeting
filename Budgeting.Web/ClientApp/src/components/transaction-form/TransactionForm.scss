@@ -1,7 +1,8 @@
-.IncomeForm {
+.TransactionForm {
   max-width: 400px;
 
-  .InputField {
+  .InputField,
+  .SelectField {
     padding-bottom: 24px;
   }
 
