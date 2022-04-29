@@ -28,7 +28,7 @@
     "import/extensions": "off",
     "no-shadow": "off",
     "@typescript-eslint/no-shadow": ["error"],
-    "operator-linebreak": "off"
+    "operator-linebreak": "off",
   },
   "settings": {
     "import/resolver": {

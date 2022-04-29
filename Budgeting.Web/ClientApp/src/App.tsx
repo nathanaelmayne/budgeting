@@ -7,15 +7,12 @@ import { Transaction } from './models/transaction.model';
 
 function App() {
   const [transactions, setTransactions] = React.useState<Transaction[]>([]);
-  const [showAddTransactionModal, setShowAddTransactionModal] =
-    React.useState(false);
-  const [showEditTransactionModal, setShowEditTransactionModal] =
-    React.useState(false);
-  const [editingTransaction, setEditingTransaction] =
-    React.useState<Transaction>();
+  const [showAddTransactionModal, setShowAddTransactionModal] = React.useState(false);
+  const [showEditTransactionModal, setShowEditTransactionModal] = React.useState(false);
+  const [editingTransaction, setEditingTransaction] = React.useState<Transaction>();
 
   useEffect(() => {
-    setTransactions(() => JSON.parse(localStorage.getItem('expenses') || '[]'));
+    setTransactions(() => JSON.parse(localStorage.getItem('transactions') || '[]'));
   }, []);
 
   useEffect(() => {
@@ -48,18 +45,13 @@ function App() {
     <div className="App">
       <div className="main-container">
         <div className="actions">
-          <TextButton onClick={() => openAddTransactionModal()}>
-            Add Transaction
-          </TextButton>
+          <TextButton onClick={() => openAddTransactionModal()}>Add Transaction</TextButton>
         </div>
         <div className="historical-expenses">
           <table>
             <tbody>
               {transactions.map((transaction) => (
-                <tr
-                  onClick={() => openEditTransactionModal(transaction)}
-                  key={transaction.id}
-                >
+                <tr onClick={() => openEditTransactionModal(transaction)} key={transaction.id}>
                   <td>{transaction.name}</td>
                   <td>{transaction.amount}</td>
                   <td>{transaction.timestamp}</td>
@@ -73,9 +65,7 @@ function App() {
 
       {showAddTransactionModal && (
         <Modal onClose={() => setShowAddTransactionModal(false)}>
-          <TransactionForm
-            handleTransactionSaved={(e) => handleAddTransaction(e)}
-          />
+          <TransactionForm handleTransactionSaved={(e) => handleAddTransaction(e)} />
         </Modal>
       )}
 
