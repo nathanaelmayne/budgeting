@@ -1,15 +1,21 @@
 import React, { useEffect } from 'react';
 import './App.scss';
 import ExpenseForm from './components/expense-form/ExpenseForm';
+import IncomeForm from './components/income-form/IncomeForm';
 import Modal from './components/modal/Modal';
 import TextButton from './components/text-button/TextButton';
 import { Expense } from './models/expense.model';
+import { Income } from './models/income.model';
 
 function App() {
   const [showAddExpenseModal, setShowAddExpenseModal] = React.useState(false);
+  const [showAddIncomeModal, setShowAddIncomeModal] = React.useState(false);
   const [showEditExpenseModal, setShowEditExpenseModal] = React.useState(false);
+  const [showEditIncomeModal, setShowEditIncomeModal] = React.useState(false);
   const [expenses, setExpenses] = React.useState<Expense[]>([]);
+  const [incomes, setIncomes] = React.useState<Expense[]>([]);
   const [editingExpense, setEditingExpense] = React.useState<Expense>();
+  const [editingIncome, setEditingIncome] = React.useState<Income>();
 
   useEffect(() => {
     setExpenses(() => JSON.parse(localStorage.getItem('expenses') || '[]'));
@@ -24,6 +30,11 @@ function App() {
     setShowAddExpenseModal(false);
   }
 
+  function handleAddIncome(income: Income) {
+    setIncomes((prevState) => [...prevState, income]);
+    setShowAddIncomeModal(false);
+  }
+
   function handleEditExpense(expense: Expense) {
     const copy = [...expenses];
     const index = expenses.findIndex((e) => e.id === expense.id);
@@ -32,13 +43,30 @@ function App() {
     setShowEditExpenseModal(false);
   }
 
+  function handleEditIncome(income: Income) {
+    const copy = [...incomes];
+    const index = incomes.findIndex((e) => e.id === income.id);
+    copy.splice(index, 1, income);
+    setIncomes(copy);
+    setShowEditIncomeModal(false);
+  }
+
   function openAddExpenseDialog() {
     setShowAddExpenseModal(true);
+  }
+
+  function openAddIncomeDialog() {
+    setShowAddIncomeModal(true);
   }
 
   function openEditExpenseDialog(expense: Expense) {
     setEditingExpense(expense);
     setShowEditExpenseModal(true);
+  }
+
+  function openEditIncomeDialog(income: Income) {
+    setEditingIncome(income);
+    setShowEditIncomeModal(true);
   }
 
   return (
@@ -48,13 +76,23 @@ function App() {
           <TextButton onClick={() => openAddExpenseDialog()}>
             Add Expense
           </TextButton>
-          <TextButton onClick={() => openAddExpenseDialog()}>
+          <TextButton onClick={() => openAddIncomeDialog()}>
             Add Income
           </TextButton>
         </div>
         <div className="historical-expenses">
           <table>
             <tbody>
+              {incomes.map((income) => (
+                <tr
+                  onClick={() => openEditIncomeDialog(income)}
+                  key={income.id}
+                >
+                  <td>{income.name}</td>
+                  <td>{income.amount}</td>
+                  <td>{income.timestamp}</td>
+                </tr>
+              ))}
               {expenses.map((expense) => (
                 <tr
                   onClick={() => openEditExpenseDialog(expense)}
@@ -81,6 +119,21 @@ function App() {
           <ExpenseForm
             editingExpense={editingExpense}
             handleExpenseSaved={(e) => handleEditExpense(e)}
+          />
+        </Modal>
+      )}
+
+      {showAddIncomeModal && (
+        <Modal onClose={() => setShowAddIncomeModal(false)}>
+          <IncomeForm handleIncomeSaved={(e) => handleAddIncome(e)} />
+        </Modal>
+      )}
+
+      {showEditIncomeModal && (
+        <Modal onClose={() => setShowEditIncomeModal(false)}>
+          <IncomeForm
+            editingIncome={editingIncome}
+            handleIncomeSaved={(e) => handleEditIncome(e)}
           />
         </Modal>
       )}
