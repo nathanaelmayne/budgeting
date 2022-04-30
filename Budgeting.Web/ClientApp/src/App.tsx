@@ -3,7 +3,7 @@ import './App.scss';
 import Modal from './components/modal/Modal';
 import TextButton from './components/text-button/TextButton';
 import TransactionForm from './components/transaction-form/TransactionForm';
-import TransactionType from './enums/transaction-type.enum';
+import { TransactionTypeDisplay } from './enums/transaction-type.enum';
 import { Transaction } from './models/transaction.model';
 
 function App() {
@@ -60,7 +60,7 @@ function App() {
                   <td>{transaction.name}</td>
                   <td>{transaction.amount}</td>
                   <td>{transaction.timestamp}</td>
-                  <td>{TransactionType[transaction.type]}</td>
+                  <td>{TransactionTypeDisplay[transaction.type]}</td>
                 </tr>
               ))}
             </tbody>
