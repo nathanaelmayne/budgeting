@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 export enum TransactionType {
-    Debit,
-    Credit
+    Credit,
+    Debit
 }
 
 export default TransactionType;

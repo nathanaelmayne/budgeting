@@ -67,35 +67,31 @@ function TransactionForm({ handleTransactionSaved, editingTransaction }: Props) 
     <div className="TransactionForm">
       <SelectField label="Type">
         <select
-          defaultValue={type}
+          value={type}
           onChange={(e) => {
             // TODO: Move enum parsing to helper function.
             const transactionType: TransactionType = Object.values(TransactionType).find(
-              (x) => x === e.target.value,
+              (x) => x === parseInt(e.target.value, 2),
             ) as TransactionType;
 
             setType(transactionType);
           }}
         >
-          <option value="Credit">Expense</option>
-          <option value="Debit">Income</option>
+          <option value="0">Expense</option>
+          <option value="1">Income</option>
         </select>
       </SelectField>
 
       <InputField label="Name">
-        <input defaultValue={name} type="text" onChange={(e) => setName(e.target.value)} />
+        <input value={name} type="text" onChange={(e) => setName(e.target.value)} />
       </InputField>
 
       <InputField label="Amount">
-        <input defaultValue={amount} type="number" onChange={(e) => setAmount(e.target.value)} />
+        <input value={amount} type="number" onChange={(e) => setAmount(e.target.value)} />
       </InputField>
 
       <InputField label="Date">
-        <input
-          defaultValue={timestamp}
-          type="date"
-          onChange={(e) => setTimestamp(e.target.value)}
-        />
+        <input value={timestamp} type="date" onChange={(e) => setTimestamp(e.target.value)} />
       </InputField>
 
       <div className="button-wrapper">
