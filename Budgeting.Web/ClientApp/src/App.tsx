@@ -3,6 +3,7 @@ import './App.scss';
 import Modal from './components/modal/Modal';
 import TextButton from './components/text-button/TextButton';
 import TransactionForm from './components/transaction-form/TransactionForm';
+import TransactionType from './enums/transaction-type.enum';
 import { Transaction } from './models/transaction.model';
 
 function App() {
@@ -41,6 +42,10 @@ function App() {
     setShowEditTransactionModal(true);
   }
 
+  function getOrderedTransactions() {
+    return transactions.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+  }
+
   return (
     <div className="App">
       <div className="main-container">
@@ -50,12 +55,12 @@ function App() {
         <div className="historical-expenses">
           <table>
             <tbody>
-              {transactions.map((transaction) => (
+              {getOrderedTransactions().map((transaction) => (
                 <tr onClick={() => openEditTransactionModal(transaction)} key={transaction.id}>
                   <td>{transaction.name}</td>
                   <td>{transaction.amount}</td>
                   <td>{transaction.timestamp}</td>
-                  <td>{transaction.type}</td>
+                  <td>{TransactionType[transaction.type]}</td>
                 </tr>
               ))}
             </tbody>
