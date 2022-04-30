@@ -12,10 +12,7 @@ interface Props {
   editingTransaction?: Transaction;
 }
 
-function TransactionForm({
-  handleTransactionSaved,
-  editingTransaction,
-}: Props) {
+function TransactionForm({ handleTransactionSaved, editingTransaction }: Props) {
   const [name, setName] = useState<string>('');
   const [amount, setAmount] = useState<string>('');
   const [timestamp, setTimestamp] = useState<string>('');
@@ -73,9 +70,9 @@ function TransactionForm({
           defaultValue={type}
           onChange={(e) => {
             // TODO: Move enum parsing to helper function.
-            const transactionType: TransactionType = Object.values(
-              TransactionType,
-            ).find((x) => x === e.target.value) as TransactionType;
+            const transactionType: TransactionType = Object.values(TransactionType).find(
+              (x) => x === e.target.value,
+            ) as TransactionType;
 
             setType(transactionType);
           }}
@@ -86,39 +83,25 @@ function TransactionForm({
       </SelectField>
 
       <InputField label="Name">
-        <input
-          defaultValue={name}
-          type="text"
-          onChange={(e) => setName(e.target.value)}
-        />
+        <input defaultValue={name} type="text" onChange={(e) => setName(e.target.value)} />
       </InputField>
 
       <InputField label="Amount">
-        <input
-          defaultValue={amount}
-          type="number"
-          onChange={(e) => setAmount(e.target.value)}
-        />
+        <input defaultValue={amount} type="number" onChange={(e) => setAmount(e.target.value)} />
       </InputField>
 
       <InputField label="Date">
         <input
           defaultValue={timestamp}
-          type="text"
+          type="date"
           onChange={(e) => setTimestamp(e.target.value)}
         />
       </InputField>
 
       <div className="button-wrapper">
-        {editing && (
-          <TextButton onClick={() => handleEditTransaction()}>
-            Edit Transaction
-          </TextButton>
-        )}
+        {editing && <TextButton onClick={() => handleEditTransaction()}>Save</TextButton>}
         {!editing && (
-          <TextButton onClick={() => handleAddTransaction()}>
-            Add Transaction
-          </TextButton>
+          <TextButton onClick={() => handleAddTransaction()}>Add Transaction</TextButton>
         )}
       </div>
     </div>
