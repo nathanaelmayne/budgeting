@@ -13,9 +13,22 @@
 
     .historical-expenses {
       padding: 24px 0;
+      text-align: left;
+
+      td:not(:first-child),
+      th:not(:first-child) {
+        padding: 8px 24px;
+      }
+
+      thead {
+        th {
+          text-align: left;
+        }
+      }
 
       tr {
         cursor: pointer;
+
         td:not(:first-child) {
           padding: 8px 24px;
         }

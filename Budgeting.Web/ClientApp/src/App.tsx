@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import './App.scss';
+import LineChart from './components/line-chart/LineChart';
 import Modal from './components/modal/Modal';
 import TextButton from './components/text-button/TextButton';
 import TransactionForm from './components/transaction-form/TransactionForm';
-import { TransactionTypeDisplay } from './enums/transaction-type.enum';
+import TransactionType, { TransactionTypeDisplay } from './enums/transaction-type.enum';
 import { Transaction } from './models/transaction.model';
 
 function App() {
@@ -46,6 +47,38 @@ function App() {
     return transactions.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
   }
 
+  function getLineChartData() {
+    const orderedTransactions = getOrderedTransactions();
+    if (!orderedTransactions.length) return [];
+
+    const offset = new Date(orderedTransactions[0].timestamp).valueOf();
+
+    const lineData: { x: number; y: number }[] = [];
+    for (let i = 0; i < orderedTransactions.length; i++) {
+      const currentTransaction = orderedTransactions[i];
+      const prevBalance = lineData[i - 1];
+
+      let balance = prevBalance ? prevBalance.y : 0;
+
+      switch (currentTransaction.type) {
+        case TransactionType.Debit:
+          balance += currentTransaction.amount;
+          break;
+        case TransactionType.Credit:
+        default:
+          balance -= currentTransaction.amount;
+          break;
+      }
+
+      lineData.push({
+        x: new Date(currentTransaction.timestamp).valueOf() - offset,
+        y: balance,
+      });
+    }
+
+    return lineData;
+  }
+
   return (
     <div className="App">
       <div className="main-container">
@@ -54,6 +87,14 @@ function App() {
         </div>
         <div className="historical-expenses">
           <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Type</th>
+              </tr>
+            </thead>
             <tbody>
               {getOrderedTransactions().map((transaction) => (
                 <tr onClick={() => openEditTransactionModal(transaction)} key={transaction.id}>
@@ -66,6 +107,7 @@ function App() {
             </tbody>
           </table>
         </div>
+        {getLineChartData().length && <LineChart data={getLineChartData()} />}
       </div>
 
       {showAddTransactionModal && (

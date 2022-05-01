@@ -30,7 +30,8 @@
     "no-shadow": "off",
     "@typescript-eslint/no-shadow": ["error"],
     "operator-linebreak": "off",
-    "no-confusing-arrow": "off"
+    "no-confusing-arrow": "off",
+    "no-plusplus": "off"
   },
   "settings": {
     "import/resolver": {
