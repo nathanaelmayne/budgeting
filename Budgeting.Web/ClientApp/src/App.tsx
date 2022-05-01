@@ -5,6 +5,7 @@ import Modal from './components/modal/Modal';
 import TextButton from './components/text-button/TextButton';
 import TransactionForm from './components/transaction-form/TransactionForm';
 import TransactionType, { TransactionTypeDisplay } from './enums/transaction-type.enum';
+import { LineDataPoint } from './models/line-data-point.model';
 import { Transaction } from './models/transaction.model';
 
 function App() {
@@ -53,10 +54,10 @@ function App() {
 
     const offset = new Date(orderedTransactions[0].timestamp).valueOf();
 
-    const lineData: { x: number; y: number }[] = [];
+    const pointData: LineDataPoint[] = [];
     for (let i = 0; i < orderedTransactions.length; i++) {
       const currentTransaction = orderedTransactions[i];
-      const prevBalance = lineData[i - 1];
+      const prevBalance = pointData[i - 1];
 
       let balance = prevBalance ? prevBalance.y : 0;
 
@@ -70,13 +71,15 @@ function App() {
           break;
       }
 
-      lineData.push({
+      pointData.push({
+        id: currentTransaction.id,
+        label: currentTransaction.name,
         x: new Date(currentTransaction.timestamp).valueOf() - offset,
         y: balance,
       });
     }
 
-    return lineData;
+    return pointData;
   }
 
   return (

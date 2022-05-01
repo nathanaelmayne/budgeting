@@ -1,40 +1,43 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { LineDataPoint } from '../../models/line-data-point.model';
 import './LineChart.scss';
 
 interface Props {
-  data: { x: number; y: number }[];
+  data: LineDataPoint[];
   color?: string;
   svgHeight?: number;
   svgWidth?: number;
 }
 
 function LineChart(props: Props) {
-  function getMinX() {
+  useEffect(() => {
+    // adjust x data
+  }, []);
+
+  function onlyX() {
     const { data } = props;
-    const onlyX = data.map((obj) => obj.x);
-    const minX = Math.min.apply(null, onlyX);
-    return minX;
+    return data.map((obj) => obj.x);
+  }
+
+  function onlyY() {
+    const { data } = props;
+    return data.map((obj) => obj.y);
+  }
+
+  function getMinX() {
+    return Math.min.apply(null, onlyX());
   }
 
   function getMinY() {
-    const { data } = props;
-    const onlyY = data.map((obj) => obj.y);
-    const minY = Math.min.apply(null, onlyY);
-    return minY;
+    return Math.min.apply(null, onlyY());
   }
 
   function getMaxX() {
-    const { data } = props;
-    const onlyX = data.map((obj) => obj.x);
-    const maxX = Math.max.apply(null, onlyX);
-    return maxX;
+    return Math.max.apply(null, onlyX());
   }
 
   function getMaxY() {
-    const { data } = props;
-    const onlyY = data.map((obj) => obj.y);
-    const maxY = Math.max.apply(null, onlyY);
-    return maxY;
+    return Math.max.apply(null, onlyY());
   }
 
   function getSvgX(x: number) {
@@ -70,7 +73,7 @@ function LineChart(props: Props) {
   }
 
   return (
-    <svg viewBox={`0 0 ${600} ${200}`}>
+    <svg viewBox={`0 0 ${getSvgX(getMaxX())} ${getSvgY(getMinY())}`}>
       {makePath()}
       {makeAxis()}
     </svg>
