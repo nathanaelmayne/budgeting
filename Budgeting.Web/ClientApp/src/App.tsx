@@ -1,11 +1,11 @@
+import { AnimatedAxis, AnimatedGrid, AnimatedLineSeries, darkTheme, XYChart } from '@visx/xychart';
 import React, { useEffect } from 'react';
 import './App.scss';
-import LineChart from './components/line-chart/LineChart';
 import Modal from './components/modal/Modal';
 import TextButton from './components/text-button/TextButton';
 import TransactionForm from './components/transaction-form/TransactionForm';
 import TransactionType, { TransactionTypeDisplay } from './enums/transaction-type.enum';
-import { LineDataPoint } from './models/line-data-point.model';
+import { LineChartPoint } from './models/line-chart-point.model';
 import { Transaction } from './models/transaction.model';
 
 function App() {
@@ -52,9 +52,7 @@ function App() {
     const orderedTransactions = getOrderedTransactions();
     if (!orderedTransactions.length) return [];
 
-    const offset = new Date(orderedTransactions[0].timestamp).valueOf();
-
-    const pointData: LineDataPoint[] = [];
+    const pointData: LineChartPoint[] = [];
     for (let i = 0; i < orderedTransactions.length; i++) {
       const currentTransaction = orderedTransactions[i];
       const prevBalance = pointData[i - 1];
@@ -74,12 +72,20 @@ function App() {
       pointData.push({
         id: currentTransaction.id,
         label: currentTransaction.name,
-        x: new Date(currentTransaction.timestamp).valueOf() - offset,
+        x: currentTransaction.timestamp,
         y: balance,
       });
     }
 
     return pointData;
+  }
+
+  function xAccessor() {
+    return (d: LineChartPoint) => d.x;
+  }
+
+  function yAccessor() {
+    return (d: LineChartPoint) => d.y;
   }
 
   return (
@@ -110,7 +116,25 @@ function App() {
             </tbody>
           </table>
         </div>
-        {getLineChartData().length && <LineChart data={getLineChartData()} />}
+        {getLineChartData().length && (
+          <XYChart
+            height={500}
+            width={500}
+            xScale={{ type: 'band' }}
+            yScale={{ type: 'linear' }}
+            theme={darkTheme}
+          >
+            <AnimatedAxis orientation="bottom" />
+            <AnimatedAxis orientation="left" />
+            <AnimatedGrid columns={false} numTicks={4} />
+            <AnimatedLineSeries
+              dataKey="Balance"
+              data={getLineChartData()}
+              xAccessor={xAccessor()}
+              yAccessor={yAccessor()}
+            />
+          </XYChart>
+        )}
       </div>
 
       {showAddTransactionModal && (
