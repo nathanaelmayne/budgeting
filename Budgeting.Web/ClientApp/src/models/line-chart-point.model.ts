@@ -1,6 +1,4 @@
 export interface LineChartPoint {
-    id: string;
-    label: string;
-    x: number | string;
+    x: number;
     y: number;
 }

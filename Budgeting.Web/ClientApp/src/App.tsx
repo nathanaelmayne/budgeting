@@ -7,6 +7,7 @@ import TransactionForm from './components/transaction-form/TransactionForm';
 import TransactionType, { TransactionTypeDisplay } from './enums/transaction-type.enum';
 import { LineChartPoint } from './models/line-chart-point.model';
 import { Transaction } from './models/transaction.model';
+import getTrendlineFunc from './utils/chart.utils';
 
 function App() {
   const [transactions, setTransactions] = React.useState<Transaction[]>([]);
@@ -70,14 +71,46 @@ function App() {
       }
 
       pointData.push({
-        id: currentTransaction.id,
-        label: currentTransaction.name,
-        x: currentTransaction.timestamp,
+        x: new Date(currentTransaction.timestamp).valueOf(),
         y: balance,
       });
     }
 
     return pointData;
+  }
+
+  function getTrendline(): LineChartPoint[] {
+    if (transactions.length < 2) return [];
+
+    const trendLinePoints = getLineChartData();
+    const trendLineFunc = getTrendlineFunc(trendLinePoints);
+
+    trendLinePoints.forEach((p) => {
+      // eslint-disable-next-line no-param-reassign
+      p.y = trendLineFunc(p.x);
+    });
+
+    return trendLinePoints;
+  }
+
+  function getTrendlineProjection(): LineChartPoint[] {
+    const trendline = getTrendline();
+    const trendLineFunc = getTrendlineFunc(getLineChartData());
+
+    const lastPoint = trendline[trendline.length - 1];
+    const length = lastPoint.x - trendline[0].x;
+    const projectionToX = lastPoint.x + length;
+
+    return [
+      {
+        x: lastPoint.x,
+        y: lastPoint.y,
+      },
+      {
+        x: projectionToX,
+        y: trendLineFunc(projectionToX),
+      },
+    ];
   }
 
   function xAccessor() {
@@ -117,23 +150,37 @@ function App() {
           </table>
         </div>
         {getLineChartData().length && (
-          <XYChart
-            height={500}
-            width={500}
-            xScale={{ type: 'band' }}
-            yScale={{ type: 'linear' }}
-            theme={darkTheme}
-          >
-            <AnimatedAxis orientation="bottom" />
-            <AnimatedAxis orientation="left" />
-            <AnimatedGrid columns={false} numTicks={4} />
-            <AnimatedLineSeries
-              dataKey="Balance"
-              data={getLineChartData()}
-              xAccessor={xAccessor()}
-              yAccessor={yAccessor()}
-            />
-          </XYChart>
+          <div className="balance-chart">
+            <XYChart
+              height={500}
+              width={1000}
+              xScale={{ type: 'time' }}
+              yScale={{ type: 'linear' }}
+              theme={darkTheme}
+            >
+              <AnimatedAxis orientation="bottom" />
+              <AnimatedAxis orientation="left" />
+              <AnimatedGrid columns={false} />
+              <AnimatedLineSeries
+                dataKey="Balance"
+                data={getLineChartData()}
+                xAccessor={xAccessor()}
+                yAccessor={yAccessor()}
+              />
+              <AnimatedLineSeries
+                dataKey="Trendline"
+                data={getTrendline()}
+                xAccessor={xAccessor()}
+                yAccessor={yAccessor()}
+              />
+              <AnimatedLineSeries
+                dataKey="Projection"
+                data={getTrendlineProjection()}
+                xAccessor={xAccessor()}
+                yAccessor={yAccessor()}
+              />
+            </XYChart>
+          </div>
         )}
       </div>
 

@@ -5,6 +5,9 @@
   .main-container {
     padding: 24px 0;
     max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
     .actions {
       display: flex;
@@ -37,6 +40,10 @@
           background-color: #27282b;
         }
       }
+    }
+
+    .balance-chart {
+      width: 1000px;
     }
   }
 }
