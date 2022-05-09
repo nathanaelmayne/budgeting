@@ -60,7 +60,7 @@ function App() {
     const orderedTransactions = getOrderedTransactions();
     if (!orderedTransactions.length) return [];
 
-    const pointData: LineChartPoint[] = [];
+    const pointData: LineChartPoint<Transaction>[] = [];
     for (let i = 0; i < orderedTransactions.length; i++) {
       const currentTransaction = orderedTransactions[i];
       const prevBalance = pointData[i - 1];
@@ -82,13 +82,14 @@ function App() {
         showTooltip: true,
         x: new Date(currentTransaction.timestamp).valueOf(),
         y: balance,
+        data: currentTransaction,
       });
     }
 
     return pointData;
   }
 
-  function getTrendline(): LineChartPoint[] {
+  function getTrendline(): LineChartPoint<Transaction>[] {
     if (transactions.length < 2) return [];
 
     const trendLinePoints = getLineChartData();
@@ -99,13 +100,14 @@ function App() {
       p.y = trendLineFunc(p.x);
       p.label = 'Trendline';
       p.showTooltip = false;
+      p.data = undefined;
       /* eslint-enable no-param-reassign */
     });
 
     return trendLinePoints;
   }
 
-  function getTrendlineProjection(): LineChartPoint[] {
+  function getTrendlineProjection(): LineChartPoint<Transaction>[] {
     const trendline = getTrendline();
     const trendLineFunc = getTrendlineFunc(getLineChartData());
 
@@ -130,8 +132,8 @@ function App() {
   }
 
   const accessors = {
-    xAccessor: (d: LineChartPoint) => d?.x,
-    yAccessor: (d: LineChartPoint) => d?.y,
+    xAccessor: (d: LineChartPoint<Transaction>) => d?.x,
+    yAccessor: (d: LineChartPoint<Transaction>) => d?.y,
   };
 
   return (
@@ -197,7 +199,9 @@ function App() {
                 snapTooltipToDatumY
                 showDatumGlyph
                 renderTooltip={({ tooltipData, colorScale }) => {
-                  if (!(tooltipData?.nearestDatum?.datum as LineChartPoint).showTooltip)
+                  if (
+                    !(tooltipData?.nearestDatum?.datum as LineChartPoint<Transaction>).showTooltip
+                  )
                     return null;
 
                   return (
@@ -211,17 +215,28 @@ function App() {
                           flexDirection: 'column',
                         }}
                       >
-                        <span>{(tooltipData?.nearestDatum?.datum as LineChartPoint).label}</span>
+                        <span>
+                          {(tooltipData?.nearestDatum?.datum as LineChartPoint<Transaction>).label}
+                        </span>
+                        <span>
+                          Amount:{' '}
+                          {(
+                            tooltipData?.nearestDatum?.datum as LineChartPoint<Transaction>
+                          ).data?.amount.toFixed(2)}
+                        </span>
                         <span>
                           Date:{' '}
                           {
-                            new Date((tooltipData?.nearestDatum?.datum as LineChartPoint).x)
+                            new Date(
+                              (tooltipData?.nearestDatum?.datum as LineChartPoint<Transaction>).x,
+                            )
                               .toISOString()
                               .split('T')[0]
                           }
                         </span>
                         <span>
-                          Balance: {(tooltipData?.nearestDatum?.datum as LineChartPoint).y}
+                          Balance:{' '}
+                          {(tooltipData?.nearestDatum?.datum as LineChartPoint<Transaction>).y}
                         </span>
                       </div>
                     </div>
