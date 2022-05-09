@@ -17,6 +17,8 @@
     .historical-expenses {
       padding: 24px 0;
       text-align: left;
+      height: 500px;
+      overflow-y: scroll;
 
       td:not(:first-child),
       th:not(:first-child) {
