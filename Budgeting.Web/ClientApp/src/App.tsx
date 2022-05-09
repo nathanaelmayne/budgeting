@@ -1,4 +1,11 @@
-import { AnimatedAxis, AnimatedGrid, AnimatedLineSeries, darkTheme, XYChart } from '@visx/xychart';
+import {
+  AnimatedAxis,
+  AnimatedGrid,
+  AnimatedLineSeries,
+  darkTheme,
+  Tooltip,
+  XYChart,
+} from '@visx/xychart';
 import React, { useEffect } from 'react';
 import './App.scss';
 import Modal from './components/modal/Modal';
@@ -71,6 +78,8 @@ function App() {
       }
 
       pointData.push({
+        label: currentTransaction.name,
+        showTooltip: true,
         x: new Date(currentTransaction.timestamp).valueOf(),
         y: balance,
       });
@@ -86,8 +95,11 @@ function App() {
     const trendLineFunc = getTrendlineFunc(trendLinePoints);
 
     trendLinePoints.forEach((p) => {
-      // eslint-disable-next-line no-param-reassign
+      /* eslint-disable no-param-reassign */
       p.y = trendLineFunc(p.x);
+      p.label = 'Trendline';
+      p.showTooltip = false;
+      /* eslint-enable no-param-reassign */
     });
 
     return trendLinePoints;
@@ -103,23 +115,24 @@ function App() {
 
     return [
       {
+        label: 'Projection Start',
+        showTooltip: false,
         x: lastPoint.x,
         y: lastPoint.y,
       },
       {
+        label: 'Projection End',
+        showTooltip: false,
         x: projectionToX,
         y: trendLineFunc(projectionToX),
       },
     ];
   }
 
-  function xAccessor() {
-    return (d: LineChartPoint) => d.x;
-  }
-
-  function yAccessor() {
-    return (d: LineChartPoint) => d.y;
-  }
+  const accessors = {
+    xAccessor: (d: LineChartPoint) => d?.x,
+    yAccessor: (d: LineChartPoint) => d?.y,
+  };
 
   return (
     <div className="App">
@@ -164,20 +177,56 @@ function App() {
               <AnimatedLineSeries
                 dataKey="Balance"
                 data={getLineChartData()}
-                xAccessor={xAccessor()}
-                yAccessor={yAccessor()}
+                xAccessor={accessors.xAccessor}
+                yAccessor={accessors.yAccessor}
               />
               <AnimatedLineSeries
                 dataKey="Trendline"
                 data={getTrendline()}
-                xAccessor={xAccessor()}
-                yAccessor={yAccessor()}
+                xAccessor={accessors.xAccessor}
+                yAccessor={accessors.yAccessor}
               />
               <AnimatedLineSeries
                 dataKey="Projection"
                 data={getTrendlineProjection()}
-                xAccessor={xAccessor()}
-                yAccessor={yAccessor()}
+                xAccessor={accessors.xAccessor}
+                yAccessor={accessors.yAccessor}
+              />
+              <Tooltip
+                snapTooltipToDatumX
+                snapTooltipToDatumY
+                showDatumGlyph
+                renderTooltip={({ tooltipData, colorScale }) => {
+                  if (!(tooltipData?.nearestDatum?.datum as LineChartPoint).showTooltip)
+                    return null;
+
+                  return (
+                    <div>
+                      <div
+                        style={{
+                          color: colorScale
+                            ? colorScale(tooltipData?.nearestDatum?.key ?? '')
+                            : undefined,
+                          display: 'flex',
+                          flexDirection: 'column',
+                        }}
+                      >
+                        <span>{(tooltipData?.nearestDatum?.datum as LineChartPoint).label}</span>
+                        <span>
+                          Date:{' '}
+                          {
+                            new Date((tooltipData?.nearestDatum?.datum as LineChartPoint).x)
+                              .toISOString()
+                              .split('T')[0]
+                          }
+                        </span>
+                        <span>
+                          Balance: {(tooltipData?.nearestDatum?.datum as LineChartPoint).y}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                }}
               />
             </XYChart>
           </div>
