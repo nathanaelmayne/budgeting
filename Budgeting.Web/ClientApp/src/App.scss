@@ -15,7 +15,6 @@
     }
 
     .historical-expenses {
-      padding: 24px 0;
       text-align: left;
       height: 500px;
       overflow-y: scroll;
@@ -28,11 +27,16 @@
       thead {
         th {
           text-align: left;
+          position: sticky;
+          top: 0px;
+          background-color: rgb(32, 33, 36);
         }
       }
 
       tr {
-        cursor: pointer;
+        td {
+          cursor: pointer;
+        }
 
         td:not(:first-child) {
           padding: 8px 24px;
